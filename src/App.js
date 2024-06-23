@@ -25,27 +25,43 @@ function App() {
 }
 
 function Accordion({ data }) {
+  const [activeID, setActiveID] = useState(null);
+
+  function handleFaqClick(id) {
+    if (activeID === id) {
+      setActiveID(null);
+    } else {
+      setActiveID(id);
+    }
+  }
+
   return (
     <div className="accordion">
       {data.map((el, i) => (
-        <AccordionItem num={i} title={el.title} text={el.text} key={el.title} />
+        <AccordionItem
+          num={i}
+          title={el.title}
+          key={el.title}
+          activeID={activeID}
+          handleFaqClick={handleFaqClick}
+        >
+          {el.text}
+        </AccordionItem>
       ))}
     </div>
   );
 }
 
-function AccordionItem({ num, title, text }) {
-  const [isOpen, SetIsOpen] = useState(false);
-
+function AccordionItem({ num, title, activeID, handleFaqClick, children }) {
   return (
     <div
-      className={isOpen ? "item open" : "item"}
-      onClick={() => SetIsOpen(!isOpen)}
+      className={`item ${num === activeID ? "open" : ""}`}
+      onClick={() => handleFaqClick(num)}
     >
       <p className="number">{num < 9 ? `0${num + 1}` : num + 1}</p>
       <p className="title">{title}</p>
-      <p className="icon">{isOpen ? "-" : "+"}</p>
-      {isOpen && <div className="content-box">{text}</div>}
+      <p className="icon">{num === activeID ? "-" : "+"}</p>
+      {num === activeID && <div className="content-box">{children}</div>}
     </div>
   );
 }
